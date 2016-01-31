@@ -40,3 +40,8 @@ nosetests.xml
 
 # Virtual environment
 venv
+
+#Necessary folder
+templates
+static
+pyfile
