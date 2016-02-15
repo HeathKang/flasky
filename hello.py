@@ -8,7 +8,7 @@ from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.Script import Shell
+from flask.ext.script import Shell
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
