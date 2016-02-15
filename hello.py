@@ -8,6 +8,8 @@ from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.Script import Shell
+
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,6 +24,9 @@ manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
+def make_shell_context():
+	return dict(app=app,db=db,User=User,Role=Role)
+manager.add_command("shell",Shell(make_context=make_shell_context))
 
 
 class Role(db.Model):
