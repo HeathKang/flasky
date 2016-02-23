@@ -23,14 +23,14 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
-app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <xxxxxxx@foxmail.com>'
-app.config['MAIL_SEVER'] = 'smtp.qq.com'
+app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <3xxxxxxx@qq.com>'
+app.config['MAIL_SERVER'] = 'smtp.qq.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False 
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'xxxxxxxx'
-app.config['MAIL_PASSWORD'] = 'xxxxxxxx'
-app.config['FLASKY_ADMIN'] = 'xxxxxxxxxx@foxmail.com'
+app.config['MAIL_USERNAME'] = '3xxxxxx@qq.com'
+app.config['MAIL_PASSWORD'] = 'xxxxxxxxxxxxxxx'
+app.config['FLASKY_ADMIN'] = '3xxxxxxx@qq.com'
 
 
 mail = Mail(app)                   #装载电子邮件
@@ -42,9 +42,9 @@ migrate = Migrate(app, db)         #装载数据库迁移
 
 def send_email(to,subject,template,**kwargs):
 	msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,
-		          sender=app.config['FLASKY_MAIL_SENDER'],recipients=['34xxxx@qq.com'])
+		          sender=app.config['FLASKY_MAIL_SENDER'],recipients=[to])
 	msg.body = render_template(template + '.txt',**kwargs)
-	msg.heml = render_template(template + '.heml',**kwargs)
+	msg.heml = render_template(template + '.html',**kwargs)
 	mail.send(msg)
 
 class Role(db.Model):
