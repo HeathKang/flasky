@@ -11,6 +11,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.mail import Mail
 from flask.ext.mail import Message
+from threading import Thread
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,13 +24,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 
 app.config['FLASKY_MAIL_SUBJECT_PREFIX'] = '[Flasky]'
-app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <3xxxxxxx@qq.com>'
+app.config['FLASKY_MAIL_SENDER'] = 'Flasky Admin <3xxxxxxxxx@qq.com>'
 app.config['MAIL_SERVER'] = 'smtp.qq.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False 
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = '3xxxxxx@qq.com'
-app.config['MAIL_PASSWORD'] = 'xxxxxxxxxxxxxxx'
+app.config['MAIL_USERNAME'] = '3xxxxxxxxxxx@qq.com'
+app.config['MAIL_PASSWORD'] = 'xxxxxxxxxxxx'
 app.config['FLASKY_ADMIN'] = '3xxxxxxx@qq.com'
 
 
@@ -40,12 +41,18 @@ moment = Moment(app)               #装载时间戳
 db = SQLAlchemy(app)               #装载数据库
 migrate = Migrate(app, db)         #装载数据库迁移
 
+def send_async_email(app,msg):
+	with app.app_context():
+		mail.send(msg)
+
 def send_email(to,subject,template,**kwargs):
 	msg = Message(app.config['FLASKY_MAIL_SUBJECT_PREFIX'] + subject,
 		          sender=app.config['FLASKY_MAIL_SENDER'],recipients=[to])
 	msg.body = render_template(template + '.txt',**kwargs)
-	msg.heml = render_template(template + '.html',**kwargs)
-	mail.send(msg)
+	msg.html = render_template(template + '.html',**kwargs)
+	thr = Thread(target=send_async_email,args=[app,msg])
+	thr.start()
+	return thr
 
 class Role(db.Model):
     __tablename__ = 'roles'
