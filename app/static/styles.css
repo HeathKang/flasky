@@ -34,3 +34,25 @@ div.post-content {
     position:relative;
     float:top;
 }
+div .pagination {
+    text-align:right;
+    padding:0px;
+    margin:0px;
+    list-style-type:none;
+}
+div .pagination li {
+    float:left;
+    margin-right: 0.6em;
+}
+div .pagination li,.pagination a,.pagination li .selected {
+    display:block;
+    padding:0.2em 0.5em;
+    border:1px solid #ccc;
+    text-decoration:none;
+}
+div.pagination a:hover,
+div.pagination a:focus,
+dic.pagination  li .selected {
+    background-color:blue;
+    color:white;
+}
