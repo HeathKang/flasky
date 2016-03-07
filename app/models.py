@@ -18,6 +18,12 @@ class Permission:
 	MODERATE_COMMENTS = 0x08
 	ADMINISTER = 0x80
 
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
+    followed_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
+    timestamp = db.Column(db.DateTime,default=datetime.utcnow)
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -100,6 +106,18 @@ class User(UserMixin,db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean,default=False)
+
+    followed = db.relationship('Follow',
+                                foreign_keys=[Follow.follower_id],
+                                backref = db.backref('follower',lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all,delete-orphan')
+    followers = db.relationship('Follow',
+                                foreign_keys=[Follow.followed_id],
+                                backref=db.backref('followed',lazy='joined'),
+                                lazy='dynamic',
+                                cascade='all,delete-orphan')
+
 
     name = db.Column(db.String(64))
     location = db.Column(db.String(64))
@@ -208,6 +226,22 @@ class User(UserMixin,db.Model):
     	self.last_seen = datetime.utcnow()
     	db.session.add(self)
 
+    def follow(self,user):
+        if not self.is_following(user):
+            f = Follow(follower=self,followed=user)
+            db.session.add(f)
+
+    def unfollow(self,user):
+        f = self.followed.filter_by(followed_id=user.id).first()
+        if f:
+            db.session.delete(f)
+
+    def is_following(self,user):
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed(self,user):
+        return self.followers.filter_by(follwer_id=user.id).first() is not None
+
     @staticmethod
     def generate_fake(count=100):
         from sqlalchemy.exc import IntegrityError
@@ -240,6 +274,8 @@ class AnonymousUser(AnonymousUserMixin):
 
 	def is_administrator(self):
 		return False
+
+
 
 login_manager.anonymous_user = AnonymousUser
 
