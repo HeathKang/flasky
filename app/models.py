@@ -239,8 +239,13 @@ class User(UserMixin,db.Model):
     def is_following(self,user):
         return self.followed.filter_by(followed_id=user.id).first() is not None
 
-    def is_followed(self,user):
+    def is_followed_by(self,user):
         return self.followers.filter_by(follwer_id=user.id).first() is not None
+
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow,Follow.followed_id == Post.author_id)\
+            .filter(Follow.follower_id == self.id)
 
     @staticmethod
     def generate_fake(count=100):
@@ -263,6 +268,8 @@ class User(UserMixin,db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+    
 
         
     def __repr__(self):
