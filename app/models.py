@@ -8,7 +8,11 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app
 from markdown import markdown
 import bleach
+from flask import current_app
+from markdown import markdown
+import bleach
 from datetime import datetime
+
 
 
 class Permission:
@@ -23,6 +27,8 @@ class Follow(db.Model):
     follower_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
     followed_id = db.Column(db.Integer,db.ForeignKey('users.id'),primary_key=True)
     timestamp = db.Column(db.DateTime,default=datetime.utcnow)
+
+
 
 class Role(db.Model):
     __tablename__ = 'roles'
@@ -67,6 +73,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
     author_id = db.Column(db.Integer,db.ForeignKey('users.id'))
     body_html = db.Column(db.Text)
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
 
     @staticmethod
     def generate_fake(count=100):
@@ -117,6 +124,9 @@ class User(UserMixin,db.Model):
                                 backref=db.backref('followed',lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all,delete-orphan')
+
+    comments = db.relationship('Comment',backref='author',lazy='dynamic')
+
 
 
     name = db.Column(db.String(64))
@@ -291,9 +301,29 @@ class AnonymousUser(AnonymousUserMixin):
 	def is_administrator(self):
 		return False
 
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer,primary_key=True)
+    body = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
+    disabled = db.Column(db.Boolean)
+    author_id = db.Column(db.Integer,db.ForeignKey('users.id')) #外键
+    post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
+
+    @staticmethod               #注册在body字段，一旦有新值，函数就会调用，函数转换文本
+    def on_changed_body(target,value,oldvalue,initiator):
+        allowed_tags = ['a','abbr','acronym','b','code','em','i','strong']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value,output_format='html'),
+            tags=allowed_tags,strip=True))
+
+
+db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+
 
 
 login_manager.anonymous_user = AnonymousUser
+
 
 @login_manager.user_loader
 def load_user(user_id):
