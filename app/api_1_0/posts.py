@@ -6,7 +6,7 @@ from .decorators import permission_required
 from .errors import forbidden
 
 
-@api.route('/posts/')
+@api.route('/posts/')  ##文章集合
 def get_posts():
     page = request.args.get('page', 1, type=int)
     pagination = Post.query.paginate(
@@ -27,7 +27,7 @@ def get_posts():
     })
 
 
-@api.route('/posts/<int:id>')
+@api.route('/posts/<int:id>') ##单篇博客文章
 def get_post(id):
     post = Post.query.get_or_404(id)
     return jsonify(post.to_json())
@@ -44,7 +44,7 @@ def new_post():
         {'Location': url_for('api.get_post', id=post.id, _external=True)}
 
 
-@api.route('/posts/<int:id>', methods=['PUT'])
+@api.route('/posts/<int:id>', methods=['PUT'])      ##put更新现有资源
 @permission_required(Permission.WRITE_ARTICLES)
 def edit_post(id):
     post = Post.query.get_or_404(id)
