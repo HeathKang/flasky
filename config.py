@@ -48,7 +48,6 @@ class ProductionConfig(Config):
     def init_app(cls,app):
         Config.init_app(app)
 
-        #把错误通过电子邮件发送给管理员
         import logging
         from logging.handlers import SMTHandler
         credentials = None
@@ -74,14 +73,12 @@ class HerokuConfig(ProductionConfig):
     def init_app(cls,app):
         ProductionConfig.init_app(app)
 
-        #输出到stderr
         import logging
         from logging import StreamHandler
         file_handler = StreamHandler()
         file_handler.setLevel(logging.WARNING)
         app.logger.addHandler(file_handler)
 
-        #处理代理服务器首部
         from werkzeug.contrib.fixers import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app)
 
