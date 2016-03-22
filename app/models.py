@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import hashlib
 from flask import request
 from . import db
@@ -178,7 +180,7 @@ class User(UserMixin,db.Model):
     def confirm(self,token):
         s = Serializer(current_app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)  ##解码令牌
+            data = s.loads(token)
         except:
             return False
         if data.get('confirm') != self.id:
@@ -356,10 +358,10 @@ class Comment(db.Model):
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime,index=True,default=datetime.utcnow)
     disabled = db.Column(db.Boolean)
-    author_id = db.Column(db.Integer,db.ForeignKey('users.id')) #外键
+    author_id = db.Column(db.Integer,db.ForeignKey('users.id')) 
     post_id = db.Column(db.Integer,db.ForeignKey('posts.id'))
 
-    @staticmethod               #注册在body字段，一旦有新值，函数就会调用，函数转换文本
+    @staticmethod
     def on_changed_body(target,value,oldvalue,initiator):
         allowed_tags = ['a','abbr','acronym','b','code','em','i','strong']
         target.body_html = bleach.linkify(bleach.clean(

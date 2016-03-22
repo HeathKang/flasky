@@ -1,4 +1,5 @@
-
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from flask import render_template,abort,redirect,url_for,flash,request,current_app,make_response
 from flask.ext.login import login_required,current_user
 from . import main
