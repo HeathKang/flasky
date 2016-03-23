@@ -1,14 +1,14 @@
-"""initial migration
+"""account confirmation
 
-Revision ID: 4938b68be6ee
-Revises: 6bd2cc30eeca
-Create Date: 2016-02-28 15:30:49.446696
+Revision ID: 190163627111
+Revises: 456a945560f6
+Create Date: 2013-12-29 02:58:45.577428
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '4938b68be6ee'
-down_revision = '6bd2cc30eeca'
+revision = '190163627111'
+down_revision = '456a945560f6'
 
 from alembic import op
 import sqlalchemy as sa

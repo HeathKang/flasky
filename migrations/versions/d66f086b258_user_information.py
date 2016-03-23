@@ -1,14 +1,14 @@
-"""创建 用户资料属性
+"""user information
 
-Revision ID: 975b18abd7d5
-Revises: 869a20b422ef
-Create Date: 2016-03-01 23:15:32.155908
+Revision ID: d66f086b258
+Revises: 56ed7d33de8d
+Create Date: 2013-12-29 23:50:49.566954
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '975b18abd7d5'
-down_revision = '869a20b422ef'
+revision = 'd66f086b258'
+down_revision = '56ed7d33de8d'
 
 from alembic import op
 import sqlalchemy as sa

@@ -1,14 +1,14 @@
-"""添加关注属性
+"""followers
 
-Revision ID: 8600e6a9f563
-Revises: 17e9a3909e26
-Create Date: 2016-03-07 20:28:38.480410
+Revision ID: 2356a38169ea
+Revises: 288cd3dc5a8
+Create Date: 2013-12-31 16:10:34.500006
 
 """
 
 # revision identifiers, used by Alembic.
-revision = '8600e6a9f563'
-down_revision = '17e9a3909e26'
+revision = '2356a38169ea'
+down_revision = '288cd3dc5a8'
 
 from alembic import op
 import sqlalchemy as sa
