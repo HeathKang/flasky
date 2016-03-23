@@ -19,11 +19,11 @@ from app.exceptions import ValidationError
 
 
 class Permission:
-	FOLLOW = 0x01
-	COMMENT = 0x02
-	WRITE_ARTICLES = 0x04
-	MODERATE_COMMENTS = 0x08
-	ADMINISTER = 0x80
+    FOLLOW = 0x01
+    COMMENT = 0x02
+    WRITE_ARTICLES = 0x04
+    MODERATE_COMMENTS = 0x08
+    ADMINISTER = 0x80
 
 class Follow(db.Model):
     __tablename__ = 'follows'
@@ -49,24 +49,24 @@ class Role(db.Model):
 
     @staticmethod
     def insert_roles():
-    	roles = {
-    		'User':(Permission.FOLLOW |
-    				Permission.COMMENT |
-    				Permission.WRITE_ARTICLES,True),
-    		'Moderator':(Permission.FOLLOW |
-    					 Permission.COMMENT |
-    					 Permission.WRITE_ARTICLES |
-    					 Permission.MODERATE_COMMENTS,False),
-    		'Administrator':(0xff,False)				
-    	}
-    	for r in roles:
-    		role = Role.query.filter_by(name=r).first()
-    		if role is None:
-    			role = Role(name=r)
-    		role.permissions = roles[r][0]
-    		role.default = roles[r][1]
-    		db.session.add(role)
-    	db.session.commit()
+        roles = {
+            'User':(Permission.FOLLOW |
+                    Permission.COMMENT |
+                    Permission.WRITE_ARTICLES,True),
+            'Moderator':(Permission.FOLLOW |
+                         Permission.COMMENT |
+                         Permission.WRITE_ARTICLES |
+                         Permission.MODERATE_COMMENTS,False),
+            'Administrator':(0xff,False)                
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()
 
 
 class Post(db.Model):
@@ -253,15 +253,15 @@ class User(UserMixin,db.Model):
         return True
 
     def can(self,permissions):
-    	return self.role is not None and \
-    		(self.role.permissions & permissions) == permissions
+        return self.role is not None and \
+            (self.role.permissions & permissions) == permissions
 
     def is_administrator(self):
-    	return self.can(Permission.ADMINISTER)	
+        return self.can(Permission.ADMINISTER)    
 
     def ping(self):
-    	self.last_seen = datetime.utcnow()
-    	db.session.add(self)
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
         db.session.commit()
 
     def follow(self,user):
@@ -350,11 +350,11 @@ class User(UserMixin,db.Model):
         return '<User %r>' % self.username
 
 class AnonymousUser(AnonymousUserMixin):
-	def can(self,permissions):
-		return False
+    def can(self,permissions):
+        return False
 
-	def is_administrator(self):
-		return False
+    def is_administrator(self):
+        return False
 
 class Comment(db.Model):
     __tablename__ = 'comments'
