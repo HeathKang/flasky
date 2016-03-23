@@ -17,6 +17,7 @@ def index():
 		post = Post(body=form.body.data,
 					author=current_user._get_current_object())
 		db.session.add(post)
+        dn.session.commit()
 		return redirect(url_for('.index'))
 	page = request.args.get('page',1,type=int)
 	show_followed = False
@@ -55,6 +56,7 @@ def edit_profile():
 		current_user.location = form.location.data
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
+        db.session.commit()
 		flash('Your profile has been updated.')
 		return redirect(url_for('.user',username=current_user.username))
 	form.name.data = current_user.name
@@ -78,6 +80,7 @@ def edit_profile_admin(id):
 		user.location = form.location.data
 		user.about_me =form.about_me.data
 		db.session.add(user)
+        db.session.commit()
 		flash('The profile has been updated.')
 		return redirect(url_for('.user',username=user.username))
 	form.email.data = user.email
@@ -98,6 +101,7 @@ def post(id):
 							post=post,
 							author=current_user._get_current_object())
 		db.session.add(comment)
+        db.session.commit()
 		flash('Your comment has been published.')
 		return redirect(url_for('.post',id=post.id,page=-1))
 	page = request.args.get('page',1,type=int)
@@ -122,6 +126,7 @@ def edit(id):
 	if form.validate_on_submit():
 		post.body = form.body.data
 		db.session.add(post)
+        db.session.commit()
 		flash('The post has been updated.')
 		return redirect(url_for('.post',id=post.id))
 	form.body.data = post.body

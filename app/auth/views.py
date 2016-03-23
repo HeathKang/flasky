@@ -171,6 +171,7 @@ def edit_profile():
 		current_user.location = form.location.data
 		current_user.about_me = form.about_me.data
 		db.session.add(current_user)
+		db.session.commit()
 		flash('Your profile has been updated.')
 		return redirect(url_for('.user',username=current_user.username))
 	form.name.data = current_user.name
